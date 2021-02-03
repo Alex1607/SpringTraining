@@ -1,6 +1,8 @@
 package com.pluoi.check.controller;
 
 import com.pluoi.check.entity.Person;
+import com.pluoi.check.service.PersonService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,30 +14,34 @@ import java.util.UUID;
 @RestController
 public class PersonController {
 
-    @GetMapping
-    public List<Person> getAllPerson() {
-        return Person.getPersonsList();
+    /*
+    Hier im Controller werden die Post, Put, Get usw Mappings eingtragen.
+    */
+
+    private final PersonService personService;
+
+    @Autowired
+    public PersonController(PersonService personService) {
+        this.personService = personService;
     }
 
-    @GetMapping(path = "{id}")
-    public Person getPerson(@PathVariable("id") UUID id) {
-        return Person.getPersonsList()
-                .stream()
-                .filter(person -> person.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+    @GetMapping
+    public List<Person> getAllPerson() {
+        return personService.getAllPersons();
+    }
+
+    @GetMapping(path = "{id}") //Wird für das Mapping mit /id verwendet
+    public Person getPerson(@PathVariable("id") UUID id) { //Die
+        return personService.getPersonByID(id).orElse(null);
     }
 
     @PostMapping
-    public UUID addPerson(@NonNull @Valid @RequestBody Person person) {
-        return person.getId();
+    public void addPerson(@NonNull @Valid @RequestBody Person person) {
+        personService.addNewPerson(person);
     }
 
-    @PostMapping(path = "{id}")
+    @PutMapping(path = "{id}")
     public void updatePerson(@PathVariable("id") UUID id, @NonNull @Valid @RequestBody Person person) {
-        Person.getPersonsList()
-                .stream()
-                .filter(person1 -> person1.getId().equals(id))
-                .forEach(person1 -> person1 = person);
+        personService.updatePerson(id, person);
     }
 }

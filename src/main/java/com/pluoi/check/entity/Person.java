@@ -11,27 +11,29 @@ import java.util.UUID;
 
 public class Person {
 
-    @Getter private static final List<Person> personsList = new ArrayList<>();
-    @Getter @Setter @NotBlank private String vorname;
-    @Getter @Setter @NotBlank private String nachname;
-    @Getter @Setter private List<String> skills;
-    @Getter @Setter private UUID id;
+    @Getter
+    @Setter
+    private String vorname;
+    @Getter
+    @Setter
+    private String nachname;
+    @Getter
+    @Setter
+    private List<String> skills;
+    @Getter
+    @Setter
+    private UUID id;
 
-    public Person(@JsonProperty("vorname") String vorname,
-                  @JsonProperty("nachname") String nachname,
-                  @JsonProperty("skills") List<String> skills,
-                  @JsonProperty("id") UUID id) {
-        this.vorname = vorname;
-        this.nachname = nachname;
-        this.skills = skills;
-        this.id = id;
-
-        personsList.add(this);
-    }
-
+    /*
+    Wenn alle Properties mitgegeben werden, erstellt es ein Objekt **ohne** den Constructor?
+    Wenn ich die Id Weglasse wird aber das hier aufgerufen???
+     */
     public Person(@JsonProperty("vorname") String vorname,
                   @JsonProperty("nachname") String nachname,
                   @JsonProperty("skills") List<String> skills) {
-        new Person(vorname, nachname, skills, UUID.randomUUID());
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.skills = skills;
+        this.id = UUID.randomUUID();
     }
 }
